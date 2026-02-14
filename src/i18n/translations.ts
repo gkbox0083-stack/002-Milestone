@@ -1,0 +1,188 @@
+export type Language = 'en' | 'zh-TW';
+
+const en: Record<string, string> = {
+  // Header
+  'header.milestones_count': '{count} milestones',
+  'header.timeline': 'Timeline',
+  'header.network': 'Network',
+  'header.split': 'Split',
+  'header.sample': 'Sample',
+  'header.sample_tooltip': 'Load sample data',
+  'header.import_tooltip': 'Import JSON',
+  'header.export_tooltip': 'Export JSON',
+  'header.darkmode_tooltip': 'Toggle dark mode',
+  'header.add_milestone': 'Add Milestone',
+  'header.invalid_json': 'Invalid JSON file',
+  'header.export_csv_tooltip': 'Export CSV',
+  'header.screenshot_tooltip': 'Save screenshot',
+  'header.docs_tooltip': 'Documentation',
+  'header.table': 'Table',
+  'header.lang_toggle': '中文',
+
+  // Timeline
+  'timeline.milestones': 'Milestones',
+  'timeline.today': 'Today',
+  'timeline.progress': 'Progress: {value}%',
+  'timeline.empty': 'No milestones yet. Add one to get started!',
+  'timeline.zoom_in': 'Zoom in',
+  'timeline.zoom_out': 'Zoom out',
+  'timeline.fit_view': 'Fit view',
+
+  // Network
+  'network.empty': 'No milestones yet. Add one to get started!',
+
+  // Edit Panel
+  'edit.title': 'Edit Milestone',
+  'edit.field_title': 'Title',
+  'edit.field_description': 'Description',
+  'edit.field_status': 'Status',
+  'edit.field_progress': 'Progress',
+  'edit.field_start_date': 'Start Date',
+  'edit.field_end_date': 'End Date',
+  'edit.field_color': 'Color',
+  'edit.field_dependencies': 'Dependencies',
+  'edit.add_dependency': '+ Add dependency...',
+  'edit.field_parent': 'Parent Group',
+  'edit.no_parent': '(No parent - top level)',
+  'edit.parent_has_children': 'This milestone is a group parent and cannot be nested',
+  'edit.auto_calculated': '(Auto)',
+  'edit.delete': 'Delete',
+  'edit.cancel': 'Cancel',
+  'edit.save': 'Save',
+
+  // Status labels
+  'status.not_started': 'Not Started',
+  'status.in_progress': 'In Progress',
+  'status.completed': 'Completed',
+  'status.at_risk': 'At Risk',
+  'status.blocked': 'Blocked',
+
+  // Table
+  'table.empty': 'No milestones yet. Add one to get started!',
+  'table.add_row': 'Add Milestone',
+  'table.delete_tooltip': 'Delete milestone',
+  'table.col_title': 'Title',
+  'table.col_start': 'Start Date',
+  'table.col_end': 'End Date',
+  'table.col_status': 'Status',
+  'table.col_progress': 'Progress',
+  'table.col_color': 'Color',
+  'table.col_description': 'Description',
+  'table.today': 'Today',
+  'table.collapse': 'Collapse',
+  'table.expand': 'Expand',
+  'table.show_dates': 'Show dates',
+  'table.hide_dates': 'Hide dates',
+
+  // Docs
+  'docs.title': 'Documentation',
+  'docs.close': 'Close',
+  'docs.section_timeline': 'Timeline View',
+  'docs.section_timeline_desc': 'The timeline displays milestones as horizontal bars on a Gantt-style chart. Drag bars to move them, drag the right edge to resize. Use Ctrl+Scroll or the zoom controls (bottom-right) to zoom in/out. The red vertical line marks today. Dependency arrows show relationships between milestones. The critical path is highlighted in red.',
+  'docs.section_network': 'Network View',
+  'docs.section_network_desc': 'The network view shows milestones as nodes in a dependency graph. Drag nodes to reposition them. Connect nodes by dragging from one handle to another to create dependencies. Use mouse wheel to zoom, click and drag the background to pan. The minimap (bottom-right) provides an overview.',
+  'docs.section_editing': 'Editing',
+  'docs.section_editing_desc': 'Double-click any milestone (in either view) to open the edit panel. You can modify the title, description, status, progress, dates, color, and dependencies. Click a milestone once to select it (highlighted in blue). Use the "Add Milestone" button in the header to create new milestones.',
+  'docs.section_import_export': 'Import / Export',
+  'docs.section_import_export_desc': 'Export your project as a JSON file using the download button. Import a previously exported project using the upload button. Your data is automatically saved to local storage so it persists across browser sessions.',
+  'docs.section_shortcuts': 'Keyboard Shortcuts',
+  'docs.section_shortcuts_desc': 'Ctrl + Scroll: Zoom in/out on the timeline\nDouble-click: Edit a milestone\nEscape: Close the edit panel\nDelete: Remove selected milestones\nCtrl + Click: Toggle multi-select\nDrag on empty space: Marquee select',
+  'docs.section_table': 'Table View',
+  'docs.section_table_desc': 'The table view combines a simplified milestone timeline with an inline-editable table. The top section shows milestones as markers alternating above and below a horizontal axis. The table below allows direct editing of all milestone fields — changes update the timeline in real-time. Click a row to select it, double-click to open the full edit panel.',
+};
+
+const zhTW: Record<string, string> = {
+  // Header
+  'header.milestones_count': '{count} 個里程碑',
+  'header.timeline': '時間軸',
+  'header.network': '網絡圖',
+  'header.split': '分割',
+  'header.sample': '範例',
+  'header.sample_tooltip': '載入範例資料',
+  'header.import_tooltip': '匯入 JSON',
+  'header.export_tooltip': '匯出 JSON',
+  'header.darkmode_tooltip': '切換深色模式',
+  'header.add_milestone': '新增里程碑',
+  'header.invalid_json': '無效的 JSON 檔案',
+  'header.export_csv_tooltip': '匯出 CSV',
+  'header.screenshot_tooltip': '儲存截圖',
+  'header.docs_tooltip': '使用說明',
+  'header.table': '表格',
+  'header.lang_toggle': 'EN',
+
+  // Timeline
+  'timeline.milestones': '里程碑',
+  'timeline.today': '今天',
+  'timeline.progress': '進度：{value}%',
+  'timeline.empty': '尚無里程碑，點擊新增開始使用！',
+  'timeline.zoom_in': '放大',
+  'timeline.zoom_out': '縮小',
+  'timeline.fit_view': '適合檢視',
+
+  // Network
+  'network.empty': '尚無里程碑，點擊新增開始使用！',
+
+  // Edit Panel
+  'edit.title': '編輯里程碑',
+  'edit.field_title': '標題',
+  'edit.field_description': '說明',
+  'edit.field_status': '狀態',
+  'edit.field_progress': '進度',
+  'edit.field_start_date': '開始日期',
+  'edit.field_end_date': '結束日期',
+  'edit.field_color': '顏色',
+  'edit.field_dependencies': '依賴關係',
+  'edit.add_dependency': '+ 新增依賴...',
+  'edit.field_parent': '父群組',
+  'edit.no_parent': '(無父層 - 頂層)',
+  'edit.parent_has_children': '此里程碑為群組父層，無法被嵌套',
+  'edit.auto_calculated': '(自動)',
+  'edit.delete': '刪除',
+  'edit.cancel': '取消',
+  'edit.save': '儲存',
+
+  // Status labels
+  'status.not_started': '未開始',
+  'status.in_progress': '進行中',
+  'status.completed': '已完成',
+  'status.at_risk': '有風險',
+  'status.blocked': '已阻擋',
+
+  // Table
+  'table.empty': '尚無里程碑，點擊新增開始使用！',
+  'table.add_row': '新增里程碑',
+  'table.delete_tooltip': '刪除里程碑',
+  'table.col_title': '標題',
+  'table.col_start': '開始日期',
+  'table.col_end': '結束日期',
+  'table.col_status': '狀態',
+  'table.col_progress': '進度',
+  'table.col_color': '顏色',
+  'table.col_description': '說明',
+  'table.today': '今天',
+  'table.collapse': '收合',
+  'table.expand': '展開',
+  'table.show_dates': '顯示日期',
+  'table.hide_dates': '隱藏日期',
+
+  // Docs
+  'docs.title': '使用說明',
+  'docs.close': '關閉',
+  'docs.section_timeline': '時間軸檢視',
+  'docs.section_timeline_desc': '時間軸以甘特圖風格顯示里程碑。拖曳長條可移動，拖曳右側邊緣可調整時間長度。使用 Ctrl+滾輪 或右下角的縮放控制來放大/縮小。紅色垂直線標示今天。依賴箭頭顯示里程碑之間的關係，關鍵路徑以紅色標示。',
+  'docs.section_network': '網絡圖檢視',
+  'docs.section_network_desc': '網絡圖以節點形式呈現里程碑的依賴關係圖。拖曳節點可重新定位。從一個節點的連接點拖曳到另一個以建立依賴。使用滾輪縮放，拖曳背景平移。右下角的縮略圖提供總覽。',
+  'docs.section_editing': '編輯功能',
+  'docs.section_editing_desc': '在任何檢視中雙擊里程碑即可開啟編輯面板。您可以修改標題、說明、狀態、進度、日期、顏色和依賴關係。單擊里程碑可選取（藍色高亮）。點擊標題列的「新增里程碑」按鈕建立新里程碑。',
+  'docs.section_import_export': '匯入 / 匯出',
+  'docs.section_import_export_desc': '使用下載按鈕將專案匯出為 JSON 檔案。使用上傳按鈕匯入先前匯出的專案。您的資料會自動儲存至本機儲存空間，跨瀏覽器工作階段保留。',
+  'docs.section_shortcuts': '鍵盤快捷鍵',
+  'docs.section_shortcuts_desc': 'Ctrl + 滾輪：在時間軸上放大/縮小\n雙擊：編輯里程碑\nEscape：關閉編輯面板\nDelete：刪除選取的里程碑\nCtrl + 點擊：切換多選\n拖曳空白處：框選里程碑',
+  'docs.section_table': '表格檢視',
+  'docs.section_table_desc': '表格檢視結合簡化的里程碑時間軸與可內嵌編輯的表格。上方區域以交替上下排列的標記顯示里程碑。下方表格可直接編輯所有里程碑欄位，變更即時反映至時間軸。單擊列可選取，雙擊可開啟完整編輯面板。',
+};
+
+export const translations: Record<Language, Record<string, string>> = {
+  en,
+  'zh-TW': zhTW,
+};
