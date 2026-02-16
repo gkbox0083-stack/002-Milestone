@@ -19,6 +19,7 @@ export default function EditPanel() {
   } = useStore();
 
   const { t } = useTranslation();
+  const msById = useMemo(() => new Map(project.milestones.map((m) => [m.id, m])), [project.milestones]);
   const [form, setForm] = useState(editingMilestone);
 
   useEffect(() => {
@@ -88,7 +89,7 @@ export default function EditPanel() {
             <input
               type="text"
               value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              onChange={(e) => setForm((prev) => prev ? { ...prev, title: e.target.value } : prev)}
               className={`w-full px-3 py-2.5 rounded-lg border ${borderColor} ${inputBg} focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm`}
             />
           </div>
@@ -98,7 +99,7 @@ export default function EditPanel() {
             <label className={`block text-xs font-semibold uppercase tracking-wide mb-1.5 ${labelColor}`}>{t('edit.field_description')}</label>
             <textarea
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(e) => setForm((prev) => prev ? { ...prev, description: e.target.value } : prev)}
               rows={2}
               className={`w-full px-3 py-2.5 rounded-lg border ${borderColor} ${inputBg} focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none text-sm`}
             />
@@ -117,7 +118,7 @@ export default function EditPanel() {
               ) : (
                 <select
                   value={form.status}
-                  onChange={(e) => setForm({ ...form, status: e.target.value as MilestoneStatus })}
+                  onChange={(e) => setForm((prev) => prev ? { ...prev, status: e.target.value as MilestoneStatus } : prev)}
                   className={`w-full px-3 py-2.5 rounded-lg border ${borderColor} ${inputBg} focus:ring-2 focus:ring-blue-500 outline-none text-sm`}
                 >
                   {STATUS_KEYS.map((key) => (
@@ -151,7 +152,7 @@ export default function EditPanel() {
                     min="0"
                     max="100"
                     value={form.progress}
-                    onChange={(e) => setForm({ ...form, progress: Number(e.target.value) })}
+                    onChange={(e) => setForm((prev) => prev ? { ...prev, progress: Number(e.target.value) } : prev)}
                     className="flex-1 accent-blue-500"
                   />
                   <span className={`text-sm font-medium tabular-nums w-10 text-right ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
@@ -176,7 +177,7 @@ export default function EditPanel() {
                 <input
                   type="date"
                   value={form.startDate}
-                  onChange={(e) => setForm({ ...form, startDate: e.target.value })}
+                  onChange={(e) => setForm((prev) => prev ? { ...prev, startDate: e.target.value } : prev)}
                   className={`w-full px-3 py-2.5 rounded-lg border ${borderColor} ${inputBg} focus:ring-2 focus:ring-blue-500 outline-none text-sm`}
                 />
               )}
@@ -193,7 +194,7 @@ export default function EditPanel() {
                 <input
                   type="date"
                   value={form.endDate}
-                  onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+                  onChange={(e) => setForm((prev) => prev ? { ...prev, endDate: e.target.value } : prev)}
                   className={`w-full px-3 py-2.5 rounded-lg border ${borderColor} ${inputBg} focus:ring-2 focus:ring-blue-500 outline-none text-sm`}
                 />
               )}
@@ -211,7 +212,7 @@ export default function EditPanel() {
                     form.color === c ? 'ring-2 ring-offset-2 ring-blue-500 scale-110' : 'hover:scale-105 opacity-80 hover:opacity-100'
                   }`}
                   style={{ backgroundColor: c }}
-                  onClick={() => setForm({ ...form, color: c })}
+                  onClick={() => setForm((prev) => prev ? { ...prev, color: c } : prev)}
                 />
               ))}
             </div>
@@ -225,7 +226,7 @@ export default function EditPanel() {
             {currentDeps.length > 0 && (
               <div className="space-y-1 mb-2">
                 {currentDeps.map((depId) => {
-                  const dep = project.milestones.find((m) => m.id === depId);
+                  const dep = msById.get(depId);
                   if (!dep) return null;
                   return (
                     <div
@@ -244,7 +245,7 @@ export default function EditPanel() {
                       <button
                         onClick={() => {
                           const newDeps = form.dependencies.filter((d) => d !== depId);
-                          setForm({ ...form, dependencies: newDeps });
+                          setForm((prev) => prev ? { ...prev, dependencies: newDeps } : prev);
                         }}
                         className="text-red-400 hover:text-red-600 p-1"
                       >
@@ -268,7 +269,7 @@ export default function EditPanel() {
                   value=""
                   onChange={(e) => {
                     if (e.target.value) {
-                      setForm({ ...form, dependencies: [...form.dependencies, e.target.value] });
+                      setForm((prev) => prev ? { ...prev, dependencies: [...prev.dependencies, e.target.value] } : prev);
                     }
                   }}
                   className={`w-full px-3 py-2 rounded-lg border ${borderColor} ${inputBg} focus:ring-2 focus:ring-blue-500 outline-none text-sm`}
@@ -296,7 +297,7 @@ export default function EditPanel() {
             ) : (
               <select
                 value={form.parentId ?? ''}
-                onChange={(e) => setForm({ ...form, parentId: e.target.value || null })}
+                onChange={(e) => setForm((prev) => prev ? { ...prev, parentId: e.target.value || null } : prev)}
                 className={`w-full px-3 py-2.5 rounded-lg border ${borderColor} ${inputBg} focus:ring-2 focus:ring-blue-500 outline-none text-sm`}
               >
                 <option value="">{t('edit.no_parent')}</option>

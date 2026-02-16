@@ -41,6 +41,7 @@ export default function NetworkView() {
 
   const { t } = useTranslation();
   const milestones = project.milestones;
+  const msById = useMemo(() => new Map(milestones.map((m) => [m.id, m])), [milestones]);
   const criticalPath = useMemo(() => findCriticalPath(milestones), [milestones]);
 
   // Compute initial node positions using a simple layered layout
@@ -203,8 +204,9 @@ export default function NetworkView() {
   // Sync nodes/edges when data changes
   useEffect(() => {
     setNodes((prevNodes) => {
+      const prevById = new Map(prevNodes.map((n) => [n.id, n]));
       return initialNodes.map((newNode) => {
-        const existing = prevNodes.find((n) => n.id === newNode.id);
+        const existing = prevById.get(newNode.id);
         if (existing) {
           // Keep user-dragged position, update data + style
           return { ...existing, data: newNode.data, style: newNode.style };
@@ -236,10 +238,10 @@ export default function NetworkView() {
 
   const onNodeDoubleClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
-      const ms = milestones.find((m) => m.id === node.id);
+      const ms = msById.get(node.id);
       if (ms) setEditingMilestone(ms);
     },
-    [milestones, setEditingMilestone],
+    [msById, setEditingMilestone],
   );
 
   const onSelectionChange: OnSelectionChangeFunc = useCallback(

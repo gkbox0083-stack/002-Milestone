@@ -15,7 +15,6 @@ import {
   Camera,
   Table2,
 } from 'lucide-react';
-import { toPng } from 'html-to-image';
 import { useStore } from '../store/useStore';
 import { useTranslation } from '../i18n/useTranslation';
 import { generateCSV } from '../utils/csv';
@@ -101,6 +100,7 @@ export default function Header({ mainRef }: { mainRef: RefObject<HTMLDivElement 
   const handleScreenshot = async () => {
     if (!mainRef.current) return;
     try {
+      const { toPng } = await import('html-to-image');
       const dataUrl = await toPng(mainRef.current, {
         backgroundColor: darkMode ? '#030712' : '#f3f4f6',
         pixelRatio: 2,

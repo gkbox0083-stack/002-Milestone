@@ -17,6 +17,7 @@ const INDENT_PX = 24;
 export default function TimelineView() {
   const { project, selectedMilestoneId, selectedMilestoneIds, selectMilestone, selectMilestones, toggleMilestoneSelection, clearSelection, setEditingMilestone, updateMilestone, darkMode, collapsedGroupIds, toggleGroupCollapse, reorderMilestone } = useStore();
   const { t, language } = useTranslation();
+  const selectedSet = useMemo(() => new Set(selectedMilestoneIds), [selectedMilestoneIds]);
   const containerRef = useRef<HTMLDivElement>(null);
   const barsAreaRef = useRef<HTMLDivElement>(null);
   const [dayWidth, setDayWidth] = useState(DAY_WIDTH_DEFAULT);
@@ -76,7 +77,7 @@ export default function TimelineView() {
     }
     const effectiveMilestones = milestones.map((m) => getEffectiveMilestone(milestones, m));
     const dates = effectiveMilestones.flatMap((m) => [m.startDate, m.endDate]);
-    const sorted = dates.sort();
+    const sorted = dates.toSorted();
     const min = sorted[0];
     const max = sorted[sorted.length - 1];
     const padding = 14;
@@ -411,7 +412,7 @@ export default function TimelineView() {
                 className={`group/row flex items-center gap-1 border-b ${borderColor} cursor-pointer ${hoverBg} transition-colors ${
                   isDragged
                     ? 'opacity-40'
-                    : selectedMilestoneIds.includes(ms.id)
+                    : selectedSet.has(ms.id)
                     ? darkMode
                       ? 'bg-blue-900/40'
                       : 'bg-blue-50'
@@ -555,7 +556,7 @@ export default function TimelineView() {
               <div
                 key={`row-${row.milestone.id}`}
                 className={`absolute left-0 right-0 border-b ${borderColor} ${
-                  selectedMilestoneIds.includes(row.milestone.id)
+                  selectedSet.has(row.milestone.id)
                     ? darkMode
                       ? 'bg-blue-900/20'
                       : 'bg-blue-50/50'
@@ -632,7 +633,7 @@ export default function TimelineView() {
               const x = getBarX(ms.startDate);
               const width = getBarWidth(ms.startDate, ms.endDate);
               const isCritical = criticalPath.has(ms.id);
-              const isSelected = selectedMilestoneIds.includes(ms.id);
+              const isSelected = selectedSet.has(ms.id);
 
               // Parent: thin summary bar with diamond endpoints
               if (row.isParent) {

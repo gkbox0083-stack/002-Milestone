@@ -80,7 +80,7 @@ function SimplifiedTimeline({
   milestones: Milestone[];
   parentIds: Set<string>;
   allMilestones: Milestone[];
-  selectedIds: string[];
+  selectedIds: Set<string>;
   darkMode: boolean;
   onSelect: (id: string) => void;
   onDoubleClick: (ms: Milestone) => void;
@@ -366,7 +366,7 @@ function SimplifiedTimeline({
             const barWidth = Math.max(x2 - x1, 20);
             const barY = axisY + 8;
             const barH = 22;
-            const isSelected = selectedIds.includes(ms.id);
+            const isSelected = selectedIds.has(ms.id);
 
             return (
               <g
@@ -428,7 +428,7 @@ function SimplifiedTimeline({
             const stemEnd = axisY - stemLength;
             const titleY = showDates ? stemEnd - markerR - 18 : stemEnd - markerR - 6;
             const dateY = stemEnd - markerR - 4;
-            const isSelected = selectedIds.includes(ms.id);
+            const isSelected = selectedIds.has(ms.id);
 
             // Format date as MM/DD
             const d = new Date(ms.startDate + 'T00:00:00');
@@ -566,12 +566,16 @@ export default function TableView() {
   const { t } = useTranslation();
 
   const milestones = project.milestones;
+  const selectedSet = useMemo(() => new Set(selectedMilestoneIds), [selectedMilestoneIds]);
 
   // Compute effective milestones (parents get aggregated values)
   const effectiveMilestones = useMemo(
     () => milestones.map((ms) => getEffectiveMilestone(milestones, ms)),
     [milestones],
   );
+
+  // Map from milestone ID to milestone for O(1) lookups
+  const msById = useMemo(() => new Map(milestones.map((m) => [m.id, m])), [milestones]);
 
   // Set of parent IDs (milestones that have children)
   const parentIds = useMemo(() => {
@@ -649,7 +653,7 @@ export default function TableView() {
         milestones={effectiveMilestones}
         parentIds={parentIds}
         allMilestones={milestones}
-        selectedIds={selectedMilestoneIds}
+        selectedIds={selectedSet}
         darkMode={darkMode}
         onSelect={selectMilestone}
         onDoubleClick={setEditingMilestone}
@@ -689,8 +693,8 @@ export default function TableView() {
           <tbody>
             {displayRows.map((row) => {
               const ms = row.milestone;
-              const rawMs = milestones.find((m) => m.id === ms.id) || ms;
-              const isSelected = selectedMilestoneIds.includes(ms.id);
+              const rawMs = msById.get(ms.id) || ms;
+              const isSelected = selectedSet.has(ms.id);
 
               // ── Parent group row (section header) ──
               if (row.isParent) {
