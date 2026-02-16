@@ -15,7 +15,7 @@ const DAY_WIDTH_DEFAULT = 32;
 const INDENT_PX = 24;
 
 export default function TimelineView() {
-  const { project, selectedMilestoneId, selectedMilestoneIds, selectMilestone, selectMilestones, toggleMilestoneSelection, clearSelection, setEditingMilestone, updateMilestone, darkMode, collapsedGroupIds, toggleGroupCollapse, reorderMilestone } = useStore();
+  const { project, selectedMilestoneIds, selectMilestone, selectMilestones, toggleMilestoneSelection, clearSelection, setEditingMilestone, updateMilestone, darkMode, collapsedGroupIds, toggleGroupCollapse, reorderMilestone } = useStore();
   const { t, language } = useTranslation();
   const selectedSet = useMemo(() => new Set(selectedMilestoneIds), [selectedMilestoneIds]);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -403,7 +403,7 @@ export default function TimelineView() {
           {t('timeline.milestones')}
         </div>
         <div className="overflow-y-auto relative" ref={leftPanelRef} style={{ height: `calc(100% - ${HEADER_HEIGHT}px)` }}>
-          {displayRows.map((row, idx) => {
+          {displayRows.map((row) => {
             const ms = row.milestone;
             const isDragged = rowDragId === ms.id;
             return (

@@ -340,7 +340,7 @@ export const useStore = create<AppState>()(
         if (version < 3) {
           state.selectedMilestoneIds = [];
         }
-        return state as AppState;
+        return state as unknown as AppState;
       },
     },
   ),

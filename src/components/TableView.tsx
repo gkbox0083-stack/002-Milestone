@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Plus, Trash2, ChevronDown, ChevronRight, ZoomIn, ZoomOut, Maximize2, CalendarDays } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useTranslation } from '../i18n/useTranslation';
@@ -70,7 +70,6 @@ function ColorPicker({
 function SimplifiedTimeline({
   milestones,
   parentIds,
-  allMilestones,
   selectedIds,
   darkMode,
   onSelect,
@@ -79,7 +78,6 @@ function SimplifiedTimeline({
 }: {
   milestones: Milestone[];
   parentIds: Set<string>;
-  allMilestones: Milestone[];
   selectedIds: Set<string>;
   darkMode: boolean;
   onSelect: (id: string) => void;
@@ -609,14 +607,6 @@ export default function TableView() {
     setEditingMilestone(ms);
   };
 
-  const isReadOnly = useCallback(
-    (ms: Milestone, field: string) => {
-      if (!parentIds.has(ms.id)) return false;
-      return ['startDate', 'endDate', 'progress', 'status'].includes(field);
-    },
-    [parentIds],
-  );
-
   // Style classes
   const headerBg = darkMode ? 'bg-gray-800' : 'bg-gray-100';
   const rowBg = darkMode ? 'bg-gray-900' : 'bg-white';
@@ -652,7 +642,6 @@ export default function TableView() {
       <SimplifiedTimeline
         milestones={effectiveMilestones}
         parentIds={parentIds}
-        allMilestones={milestones}
         selectedIds={selectedSet}
         darkMode={darkMode}
         onSelect={selectMilestone}
