@@ -155,18 +155,67 @@ function SimplifiedTimeline({
     return padding + ((ts - rangeStart) / totalRange) * (svgWidth - padding * 2);
   }
 
-  // ── Lane-based collision avoidance ──
-  // Each lane is a different stem height; we greedily assign markers to the
-  // first lane whose last label right-edge doesn't overlap this marker's label.
+  // ── Collision avoidance: adaptive horizontal spread + lane assignment ──
+  const CLUSTER_THRESHOLD = 2; // px - markers closer than this are "same position"
   const STEM_HEIGHTS = [45, 75, 105, 135, 165];
   const CHAR_WIDTH = 6.5; // estimated px per char at fontSize 11
-  const LABEL_GAP = 10;
+  const LABEL_GAP = 12;
 
+  // Step 1: Compute raw X and display titles
+  const rawPositions = sorted.map((ms) => {
+    const displayTitle = ms.title.length > 16 ? ms.title.slice(0, 15) + '…' : ms.title;
+    return { ms, rawX: dateToX(ms.startDate), displayTitle };
+  });
+
+  // Step 2: Spread same-date clusters using adaptive spacing based on label widths
+  const spreadPositions: { ms: Milestone; x: number; displayTitle: string }[] = [];
+  let ci = 0;
+  while (ci < rawPositions.length) {
+    let cj = ci;
+    while (cj < rawPositions.length && Math.abs(rawPositions[cj].rawX - rawPositions[ci].rawX) <= CLUSTER_THRESHOLD) {
+      cj++;
+    }
+    const size = cj - ci;
+    if (size === 1) {
+      spreadPositions.push({ ms: rawPositions[ci].ms, x: rawPositions[ci].rawX, displayTitle: rawPositions[ci].displayTitle });
+    } else {
+      // Calculate max label width in this cluster to determine needed spacing
+      const labelWidths = [];
+      for (let k = ci; k < cj; k++) {
+        labelWidths.push(rawPositions[k].displayTitle.length * CHAR_WIDTH);
+      }
+      // Spacing between consecutive markers: average of adjacent label half-widths + gap
+      for (let k = 0; k < size; k++) {
+        const prevHalf = k > 0 ? labelWidths[k - 1] / 2 : 0;
+        const currHalf = labelWidths[k] / 2;
+        const spreadPx = Math.max(prevHalf + currHalf + LABEL_GAP, 50);
+        // Position each marker sequentially; center the group around rawX
+        if (k === 0) {
+          // First pass: place relative to each other, center later
+          spreadPositions.push({ ms: rawPositions[ci + k].ms, x: 0, displayTitle: rawPositions[ci + k].displayTitle });
+        } else {
+          const prevX = spreadPositions[spreadPositions.length - 1].x;
+          spreadPositions.push({ ms: rawPositions[ci + k].ms, x: prevX + spreadPx, displayTitle: rawPositions[ci + k].displayTitle });
+        }
+      }
+      // Center the cluster around the original raw X
+      const clusterStart = spreadPositions.length - size;
+      const firstX = spreadPositions[clusterStart].x;
+      const lastX = spreadPositions[spreadPositions.length - 1].x;
+      const clusterCenter = (firstX + lastX) / 2;
+      const rawCenter = rawPositions[ci].rawX;
+      const shift = rawCenter - clusterCenter;
+      for (let k = clusterStart; k < spreadPositions.length; k++) {
+        spreadPositions[k].x += shift;
+      }
+    }
+    ci = cj;
+  }
+
+  // Step 3: Lane-based vertical assignment on spread positions
   const laneRightEdges: number[] = STEM_HEIGHTS.map(() => -Infinity);
 
-  const placements = sorted.map((ms) => {
-    const x = dateToX(ms.startDate);
-    const displayTitle = ms.title.length > 16 ? ms.title.slice(0, 15) + '…' : ms.title;
+  const placements = spreadPositions.map(({ ms, x, displayTitle }) => {
     const labelHalfW = (displayTitle.length * CHAR_WIDTH) / 2;
     const leftEdge = x - labelHalfW;
     const rightEdge = x + labelHalfW;
