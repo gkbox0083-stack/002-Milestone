@@ -14,6 +14,7 @@ interface AppState {
   darkMode: boolean;
   language: Language;
   collapsedGroupIds: string[];
+  adDismissed: boolean;
 
   // Actions
   setViewMode: (mode: ViewMode) => void;
@@ -34,6 +35,7 @@ interface AppState {
   loadSampleData: () => void;
   toggleGroupCollapse: (parentId: string) => void;
   reorderMilestone: (dragId: string, targetId: string, position: 'before' | 'after') => void;
+  dismissAd: () => void;
 }
 
 const SAMPLE_MILESTONES: Milestone[] = [
@@ -181,6 +183,7 @@ export const useStore = create<AppState>()(
       darkMode: false,
       language: 'en' as Language,
       collapsedGroupIds: [],
+      adDismissed: false,
 
       setViewMode: (mode) => set({ viewMode: mode }),
 
@@ -286,6 +289,8 @@ export const useStore = create<AppState>()(
             : [...state.collapsedGroupIds, parentId],
         })),
 
+      dismissAd: () => set({ adDismissed: true }),
+
       reorderMilestone: (dragId, targetId, position) =>
         set((state) => {
           if (dragId === targetId) return state;
@@ -325,6 +330,10 @@ export const useStore = create<AppState>()(
     {
       name: 'milestone-app-storage',
       version: 3,
+      partialize: (state) => {
+        const { adDismissed, ...rest } = state;
+        return rest;
+      },
       migrate: (persistedState: unknown, version: number) => {
         const state = persistedState as Record<string, unknown>;
         if (version < 2) {

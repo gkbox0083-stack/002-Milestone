@@ -5,6 +5,7 @@ import TimelineView from './components/TimelineView';
 import NetworkView from './components/NetworkView';
 import EditPanel from './components/EditPanel';
 import TableView from './components/TableView';
+import AdSlot from './components/AdSlot';
 
 export default function App() {
   const { viewMode, editingMilestone, darkMode, selectedMilestoneIds, deleteMilestone, clearSelection } = useStore();
@@ -63,6 +64,8 @@ export default function App() {
           </div>
         )}
       </main>
+
+      <AdSlot />
 
       {editingMilestone && <EditPanel />}
     </div>
